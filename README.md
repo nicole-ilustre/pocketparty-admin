@@ -4,6 +4,8 @@ This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next
 
 First, run the development server:
 
+You would need `service-account.json` in folder root for application run
+
 ```bash
 npm run dev
 # or
