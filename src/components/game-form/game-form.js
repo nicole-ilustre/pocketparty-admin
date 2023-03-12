@@ -49,6 +49,8 @@ const getSlug = (title) =>
     .replace(/[^a-z0-9\s\-]+/g, "")
     .replace(/\s/g, "-");
 
+const optionalKeys = ["examples"];
+
 function GameForm({ data = DEFAULT_GAME, mode = "add", onClose, onSuccess }) {
   const [gameData, setGameData] = useState(data);
   const [gameErrors, setGameErrors] = useState({});
@@ -83,16 +85,18 @@ function GameForm({ data = DEFAULT_GAME, mode = "add", onClose, onSuccess }) {
     e.preventDefault();
 
     const errors = {};
-    Object.keys(gameData).forEach((key) => {
-      const value = gameData[key];
-      if (Array.isArray(value)) {
-        if (value.length === 0) {
+    Object.keys(gameData)
+      .filter((key) => optionalKeys.includes(key) === false)
+      .forEach((key) => {
+        const value = gameData[key];
+        if (Array.isArray(value)) {
+          if (value.length === 0) {
+            errors[key] = "Required";
+          }
+        } else if (value.trim().length === 0) {
           errors[key] = "Required";
         }
-      } else if (value.trim().length === 0) {
-        errors[key] = "Required";
-      }
-    });
+      });
 
     setGameErrors(errors);
     if (Object.keys(errors).length > 0) {
@@ -191,6 +195,17 @@ function GameForm({ data = DEFAULT_GAME, mode = "add", onClose, onSuccess }) {
             <StyledBox>
               <TextField
                 fullWidth
+                label="Image File Name (webp)"
+                variant="standard"
+                value={gameData.imageWebp}
+                onChange={(e) => setValue("imageWebp", e.target.value)}
+                error={Boolean(gameErrors.imageWebp)}
+                helperText={gameErrors.imageWebp}
+              />
+            </StyledBox>
+            <StyledBox>
+              <TextField
+                fullWidth
                 label="Youtube URL"
                 variant="standard"
                 value={gameData.youtubeUrl}
@@ -236,6 +251,19 @@ function GameForm({ data = DEFAULT_GAME, mode = "add", onClose, onSuccess }) {
                 onChange={(e) => setValue("setup", e.target.value)}
                 error={Boolean(gameErrors.setup)}
                 helperText={gameErrors.setup}
+              />
+            </StyledBox>
+            <StyledBox>
+              <TextField
+                fullWidth
+                label="Examples"
+                variant="standard"
+                multiline
+                rows={4}
+                value={gameData.examples}
+                onChange={(e) => setValue("examples", e.target.value)}
+                error={Boolean(gameErrors.examples)}
+                helperText={gameErrors.examples}
               />
             </StyledBox>
             <StyledBox>
