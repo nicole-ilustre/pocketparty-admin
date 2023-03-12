@@ -200,7 +200,7 @@ function GameForm({ data = DEFAULT_GAME, mode = "add", onClose, onSuccess }) {
                 value={gameData.imageWebp}
                 onChange={(e) => setValue("imageWebp", e.target.value)}
                 error={Boolean(gameErrors.imageWebp)}
-                helperText={gameErrors.image}
+                helperText={gameErrors.imageWebp}
               />
             </StyledBox>
             <StyledBox>
