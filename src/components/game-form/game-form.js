@@ -18,7 +18,8 @@ const DEFAULT_GAME = {
   description: "",
   filters: [],
   gameplay: "",
-  image: "",
+  cdnImage: "",
+  cdnImageWebp: "",
   minutes: "",
   place: [],
   players: "",
@@ -186,10 +187,10 @@ function GameForm({ data = DEFAULT_GAME, mode = "add", onClose, onSuccess }) {
                 fullWidth
                 label="Image File Name"
                 variant="standard"
-                value={gameData.image}
-                onChange={(e) => setValue("image", e.target.value)}
-                error={Boolean(gameErrors.image)}
-                helperText={gameErrors.image}
+                value={gameData.cdnImage}
+                onChange={(e) => setValue("cdnImage", e.target.value)}
+                error={Boolean(gameErrors.cdnImage)}
+                helperText={gameErrors.cdnImage}
               />
             </StyledBox>
             <StyledBox>
@@ -197,10 +198,10 @@ function GameForm({ data = DEFAULT_GAME, mode = "add", onClose, onSuccess }) {
                 fullWidth
                 label="Image File Name (webp)"
                 variant="standard"
-                value={gameData.imageWebp}
-                onChange={(e) => setValue("imageWebp", e.target.value)}
-                error={Boolean(gameErrors.imageWebp)}
-                helperText={gameErrors.imageWebp}
+                value={gameData.cdnImageWebp}
+                onChange={(e) => setValue("cdnImageWebp", e.target.value)}
+                error={Boolean(gameErrors.cdnImageWebp)}
+                helperText={gameErrors.cdnImageWebp}
               />
             </StyledBox>
             <StyledBox>
