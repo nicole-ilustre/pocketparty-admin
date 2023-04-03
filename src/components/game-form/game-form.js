@@ -22,7 +22,8 @@ const DEFAULT_GAME = {
   cdnImageWebp: "",
   minutes: "",
   place: [],
-  players: "",
+  playersMin: "",
+  playersMax: null,
   displayPlayers: "",
   setup: "",
   slug: "",
@@ -50,7 +51,7 @@ const getSlug = (title) =>
     .replace(/[^a-z0-9\s\-]+/g, "")
     .replace(/\s/g, "-");
 
-const optionalKeys = ["examples"];
+const optionalKeys = ["examples", "playersMax"];
 
 function GameForm({ data = DEFAULT_GAME, mode = "add", onClose, onSuccess }) {
   const [gameData, setGameData] = useState(data);
@@ -123,12 +124,20 @@ function GameForm({ data = DEFAULT_GAME, mode = "add", onClose, onSuccess }) {
       return;
     }
 
+    const gameDataServer = {
+      ...gameData,
+      playersMax:
+        gameData.playersMax && gameData.playersMax.length > 0
+          ? gameData.playersMax
+          : null,
+    };
+
     if (mode === "add") {
-      await addGame(gameData);
+      await addGame(gameDataServer);
     }
 
     if (mode === "edit") {
-      await updateGame(gameData);
+      await updateGame(gameDataServer);
     }
 
     setInProgress(false);
@@ -302,12 +311,23 @@ function GameForm({ data = DEFAULT_GAME, mode = "add", onClose, onSuccess }) {
             <StyledBox>
               <TextField
                 fullWidth
-                label="Players"
+                label="Players Min"
                 variant="standard"
-                value={gameData.players}
-                onChange={(e) => setValue("players", e.target.value)}
-                error={Boolean(gameErrors.players)}
-                helperText={gameErrors.players}
+                value={gameData.playersMin}
+                onChange={(e) => setValue("playersMin", e.target.value)}
+                error={Boolean(gameErrors.playersMin)}
+                helperText={gameErrors.playersMin}
+              />
+            </StyledBox>
+            <StyledBox>
+              <TextField
+                fullWidth
+                label="Players Max (Optional)"
+                variant="standard"
+                value={gameData.playersMax || ""}
+                onChange={(e) => setValue("playersMax", e.target.value)}
+                error={Boolean(gameErrors.playersMax)}
+                helperText={gameErrors.playersMax}
               />
             </StyledBox>
             <StyledBox>
