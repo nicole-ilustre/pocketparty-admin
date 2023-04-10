@@ -3,9 +3,11 @@ import Box from "@mui/material/Box";
 import { styled } from "@mui/material/styles";
 import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
-import Modal from "@mui/material/Modal";
+import Drawer from "@mui/material/Drawer";
 import TextField from "@mui/material/TextField";
 import CircularProgress from "@mui/material/CircularProgress";
+import FormControlLabel from "@mui/material/FormControlLabel";
+import Switch from "@mui/material/Switch";
 
 import { getGameBySlug, updateGame, addGame } from "@/libs/api";
 
@@ -30,18 +32,20 @@ const DEFAULT_GAME = {
   subTitle: "",
   title: "",
   youtubeUrl: "",
+  isPublic: false,
 };
 
 const style = {
-  position: "absolute",
-  top: "50%",
-  left: "50%",
-  transform: "translate(-50%, -50%)",
-  width: 500,
-  bgcolor: "background.paper",
-  boxShadow: 24,
+  // position: "absolute",
+  // top: "50%",
+  // left: "50%",
+  // transform: "translate(-50%, -50%)",
+  width: "560px",
+  // bgcolor: "background.paper",
+  // boxShadow: 24,
   maxHeight: "90%",
-  p: 3,
+  padding: "12px",
+  // p: 3,
 };
 
 const getSlug = (title) =>
@@ -95,7 +99,7 @@ function GameForm({ data = DEFAULT_GAME, mode = "add", onClose, onSuccess }) {
           if (value.filter((val) => val.trim().length > 0).length === 0) {
             errors[key] = "Required";
           }
-        } else if (value.trim().length === 0) {
+        } else if (typeof value === "string" && value.trim().length === 0) {
           errors[key] = "Required";
         }
       });
@@ -146,18 +150,19 @@ function GameForm({ data = DEFAULT_GAME, mode = "add", onClose, onSuccess }) {
   };
 
   return (
-    <Modal
+    <Drawer
       open={true}
       onClose={onClose}
       aria-labelledby="modal-modal-title"
       aria-describedby="modal-modal-description"
+      anchor="right"
     >
       <>
         <Box sx={style} component="form" onSubmit={onSubmit}>
           <Typography id="modal-modal-title" variant="h6" component="h2">
             {mode === "edit" ? "Edit Game" : "Add Game"}
           </Typography>
-          <Box sx={{ maxHeight: "70vh", overflowY: "auto" }}>
+          <Box sx={{ maxHeight: "calc(100vh - 120px)", overflowY: "auto" }}>
             <StyledBox>
               <TextField
                 fullWidth
@@ -365,6 +370,20 @@ function GameForm({ data = DEFAULT_GAME, mode = "add", onClose, onSuccess }) {
                 helperText={gameErrors.minutes}
               />
             </StyledBox>
+            <StyledBox style={{ paddingLeft: "8px" }}>
+              <FormControlLabel
+                value="end"
+                control={
+                  <Switch
+                    checked={gameData.isPublic}
+                    onChange={(e, isChecked) => setValue("isPublic", isChecked)}
+                    inputProps={{ "aria-label": "controlled" }}
+                  />
+                }
+                label={gameData.isPublic ? "Public" : "Draft Mode"}
+                labelPlacement="end"
+              />
+            </StyledBox>
           </Box>
           <Box
             sx={{
@@ -404,7 +423,7 @@ function GameForm({ data = DEFAULT_GAME, mode = "add", onClose, onSuccess }) {
           </Box>
         ) : null}
       </>
-    </Modal>
+    </Drawer>
   );
 }
 
