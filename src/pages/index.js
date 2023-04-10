@@ -17,6 +17,7 @@ import ButtonGroup from "@mui/material/ButtonGroup";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import AddCircleIcon from "@mui/icons-material/AddCircle";
+import Chip from "@mui/material/Chip";
 
 import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
@@ -117,6 +118,7 @@ export default function Home() {
                     <StyledTableCell>Title</StyledTableCell>
                     <StyledTableCell>Sub Title</StyledTableCell>
                     <StyledTableCell>Filters</StyledTableCell>
+                    <StyledTableCell>Public</StyledTableCell>
                     <StyledTableCell>Actions</StyledTableCell>
                   </TableRow>
                 </TableHead>
@@ -129,6 +131,13 @@ export default function Home() {
                       <StyledTableCell>{row.subTitle}</StyledTableCell>
                       <StyledTableCell>
                         {[...row.place, row.filters].join(", ")}
+                      </StyledTableCell>
+                      <StyledTableCell>
+                        {row.isPublic ? (
+                          <Chip label="Public" color="info" />
+                        ) : (
+                          <Chip label="Draft" color="warning" />
+                        )}
                       </StyledTableCell>
                       <StyledTableCell align="right">
                         <ButtonGroup variant="outlined" size="small">
