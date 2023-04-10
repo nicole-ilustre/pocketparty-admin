@@ -51,7 +51,7 @@ const getSlug = (title) =>
     .replace(/[^a-z0-9\s\-]+/g, "")
     .replace(/\s/g, "-");
 
-const optionalKeys = ["examples", "playersMax"];
+const optionalKeys = ["examples", "place", "playersMax"];
 
 function GameForm({ data = DEFAULT_GAME, mode = "add", onClose, onSuccess }) {
   const [gameData, setGameData] = useState(data);
@@ -92,7 +92,7 @@ function GameForm({ data = DEFAULT_GAME, mode = "add", onClose, onSuccess }) {
       .forEach((key) => {
         const value = gameData[key];
         if (Array.isArray(value)) {
-          if (value.length === 0) {
+          if (value.filter((val) => val.trim().length > 0).length === 0) {
             errors[key] = "Required";
           }
         } else if (value.trim().length === 0) {
@@ -126,6 +126,7 @@ function GameForm({ data = DEFAULT_GAME, mode = "add", onClose, onSuccess }) {
 
     const gameDataServer = {
       ...gameData,
+      place: gameData.place.filter((v) => v.trim().length > 0),
       playersMax:
         gameData.playersMax && gameData.playersMax.length > 0
           ? gameData.playersMax
