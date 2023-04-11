@@ -93,7 +93,7 @@ export default function Home() {
         {showData ? (
           <Container sx={{ marginTop: "20px", marginBottom: "20px" }}>
             <Typography variant="h4" sx={{ marginBottom: "16px" }}>
-              Pocket Party - Admin Panel
+              Pocket Party - Games
             </Typography>
             <Box
               sx={{
