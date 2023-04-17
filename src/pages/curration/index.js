@@ -9,7 +9,7 @@ import Typography from "@mui/material/Typography";
 import CurratedGames from "@/components/currated-games";
 
 import { getConfig, updateConfig } from "@/libs/api/config";
-import { getGames } from "@/libs/api";
+import { getGames, updateGame } from "@/libs/api";
 
 function Curation() {
   const [showData, setShowData] = useState(false);
@@ -31,7 +31,25 @@ function Curation() {
 
   const onSave = async (currationList) => {
     setShowData(false);
+
+    const gamesRemovedFromCurrations = data.filter(
+      (gameUID) => currationList.includes(gameUID) === false
+    );
+    const newGameAddedToCurration = currationList.filter(
+      (gameUID) => data.includes(gameUID) === false
+    );
+
     await updateConfig("currated-games", { games: currationList });
+
+    const removedPromises = gamesRemovedFromCurrations.map((uid) =>
+      updateGame({ uid, merge: true, isCurrated: false })
+    );
+    const addedPromises = newGameAddedToCurration.map((uid) =>
+      updateGame({ uid, merge: true, isCurrated: true })
+    );
+
+    await Promise.all([...removedPromises, ...addedPromises]);
+
     setData(currationList);
     setShowData(true);
   };
