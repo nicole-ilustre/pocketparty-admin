@@ -70,9 +70,29 @@ export const updateDisplayFilters = async () => {
   const games = await getGames();
 
   let filters = new Set();
-  games.forEach((game) => {
-    game.filters.forEach((filter) => filters.add(filter));
-  });
+  let players = { min: null, max: null };
+  games
+    .filter((game) => game.isPublic)
+    .forEach((game) => {
+      game.filters.forEach((filter) => {
+        filters.add(filter);
+      });
 
-  await updateConfig("display-filters", { filters: Array.from(filters) });
+      if (players.min === null) {
+        players.min = game.playersMin;
+      } else {
+        players.min = Math.min(players.min, game.playersMin);
+      }
+
+      if (players.max === null) {
+        players.max = game.playersMax;
+      } else {
+        players.max = Math.max(players.max, game.playersMax || game.playersMin);
+      }
+    });
+
+  await updateConfig("display-filters", {
+    filters: Array.from(filters),
+    players,
+  });
 };
