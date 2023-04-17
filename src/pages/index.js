@@ -25,7 +25,7 @@ import DialogTitle from "@mui/material/DialogTitle";
 
 import GameForm from "@/components/game-form";
 
-import { deleteGame as deleteGameApi } from "@/libs/api";
+import { deleteGame as deleteGameApi, getGames } from "@/libs/api";
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
@@ -55,23 +55,19 @@ export default function Home() {
   const [deleteGame, setDeleteGame] = useState(null);
 
   useEffect(() => {
-    fetch("/api/get-games")
-      .then((response) => response.json())
-      .then((data) => {
-        setData(data);
-        setShowData(true);
-      });
+    getGames().then((data) => {
+      setData(data);
+      setShowData(true);
+    });
   }, []);
 
   const onSuccess = async () => {
     setShowData(false);
 
-    fetch("/api/get-games")
-      .then((response) => response.json())
-      .then((data) => {
-        setData(data);
-        setShowData(true);
-      });
+    getGames().then((data) => {
+      setData(data);
+      setShowData(true);
+    });
   };
 
   const onDeleteGame = async () => {
