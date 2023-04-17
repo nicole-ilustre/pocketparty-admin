@@ -8,7 +8,8 @@ import Typography from "@mui/material/Typography";
 
 import FilterUI from "@/components/filters";
 
-import { updateConfig } from "@/libs/api/config";
+import { getConfig, updateConfig } from "@/libs/api/config";
+import { getGames } from "@/libs/api";
 
 const getSortedFilters = (games, filtersOrder) => {
   const filtersSet = new Set();
@@ -36,16 +37,11 @@ function Filters() {
   const [data, setData] = useState([]);
 
   useEffect(() => {
-    const gamesPromise = fetch("/api/get-games").then((response) =>
-      response.json()
-    );
-
-    const filtersPromise = fetch("/api/get-config?config=filters-order").then(
-      (response) => response.json()
-    );
+    const gamesPromise = getGames();
+    const filtersPromise = getConfig("filters-order");
 
     Promise.all([gamesPromise, filtersPromise]).then(([games, filters]) => {
-      setData(getSortedFilters(games, filters.data.filters));
+      setData(getSortedFilters(games, filters.filters));
       setShowData(true);
     });
   }, []);

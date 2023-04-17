@@ -1,3 +1,5 @@
+import { updateConfig } from "./config";
+
 export const getGameBySlug = async (slug) => {
   const searchParams = new URLSearchParams();
   searchParams.append("slug", slug);
@@ -14,6 +16,16 @@ export const getGameBySlug = async (slug) => {
   return data;
 };
 
+export const getGames = async () => {
+  const response = await fetch("/api/get-games");
+
+  if (!response.ok) {
+    return [];
+  }
+
+  return await response.json();
+};
+
 export const updateGame = async (data) => {
   const response = await fetch(`/api/update-game`, {
     method: "POST",
@@ -24,6 +36,7 @@ export const updateGame = async (data) => {
     return undefined;
   }
 
+  updateDisplayFilters();
   return await response.json();
 };
 
@@ -37,6 +50,7 @@ export const addGame = async (data) => {
     return undefined;
   }
 
+  updateDisplayFilters();
   return await response.json();
 };
 
@@ -50,4 +64,15 @@ export const deleteGame = async (uid) => {
   }
 
   return await response.json();
+};
+
+export const updateDisplayFilters = async () => {
+  const games = await getGames();
+
+  let filters = new Set();
+  games.forEach((game) => {
+    game.filters.forEach((filter) => filters.add(filter));
+  });
+
+  await updateConfig("display-filters", { filters: Array.from(filters) });
 };
