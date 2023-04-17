@@ -39,8 +39,6 @@ function CurratedGames({ curratedGames, gamesList, onSave }) {
       newRenderedCurratedGames[targetIdx] = renderedCurratedGames[idx];
       newRenderedCurratedGames[idx] = renderedCurratedGames[targetIdx];
 
-      console.log({ newRenderedCurratedGames });
-
       setRenderedCurratedGames(newRenderedCurratedGames);
     },
     [renderedCurratedGames]
