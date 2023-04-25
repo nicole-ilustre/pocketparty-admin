@@ -9,6 +9,10 @@ import CircularProgress from "@mui/material/CircularProgress";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import Switch from "@mui/material/Switch";
 
+import RichTextEditor from "./rich-text-editor";
+
+import { getContent } from "./helpers";
+
 import { getGameBySlug, updateGame, addGame } from "@/libs/api";
 
 const StyledBox = styled(Box)(() => ({
@@ -33,6 +37,7 @@ const DEFAULT_GAME = {
   title: "",
   youtubeUrl: "",
   isPublic: false,
+  version: "2.0",
 };
 
 const style = {
@@ -48,7 +53,9 @@ const getSlug = (title) =>
     .replace(/[^a-z0-9\s\-]+/g, "")
     .replace(/\s/g, "-");
 
-const optionalKeys = ["examples", "place", "playersMax"];
+let optionalKeys = ["examples", "place", "playersMax"];
+let oldKeys = ["setup", "gameplay", "examples"];
+let newKeys = ["content", "version"];
 
 function GameForm({ data = DEFAULT_GAME, mode = "add", onClose, onSuccess }) {
   const [gameData, setGameData] = useState(data);
@@ -83,9 +90,17 @@ function GameForm({ data = DEFAULT_GAME, mode = "add", onClose, onSuccess }) {
   const onSubmit = async (e) => {
     e.preventDefault();
 
+    let finalOptionalKeys = [...optionalKeys];
+
+    if (gameData.version === "2.0") {
+      finalOptionalKeys = [...finalOptionalKeys, ...oldKeys];
+    } else {
+      finalOptionalKeys = [...finalOptionalKeys, ...newKeys];
+    }
+
     const errors = {};
     Object.keys(gameData)
-      .filter((key) => optionalKeys.includes(key) === false)
+      .filter((key) => finalOptionalKeys.includes(key) === false)
       .forEach((key) => {
         const value = gameData[key];
         if (Array.isArray(value)) {
@@ -96,6 +111,10 @@ function GameForm({ data = DEFAULT_GAME, mode = "add", onClose, onSuccess }) {
           errors[key] = "Required";
         }
       });
+
+    if (gameData.version === "2.0" && gameData.content === "<p><br></p>") {
+      errors["content"] = "Required";
+    }
 
     setGameErrors(errors);
     if (Object.keys(errors).length > 0) {
@@ -141,6 +160,8 @@ function GameForm({ data = DEFAULT_GAME, mode = "add", onClose, onSuccess }) {
     setInProgress(false);
     onSuccess();
   };
+
+  const showRichTextEditor = gameData.version === "2.0";
 
   return (
     <Drawer
@@ -236,45 +257,55 @@ function GameForm({ data = DEFAULT_GAME, mode = "add", onClose, onSuccess }) {
                 helperText={gameErrors.description}
               />
             </StyledBox>
-            <StyledBox>
-              <TextField
-                fullWidth
-                label="Game Play"
-                variant="standard"
-                multiline
-                rows={4}
-                value={gameData.gameplay}
-                onChange={(e) => setValue("gameplay", e.target.value)}
-                error={Boolean(gameErrors.gameplay)}
-                helperText={gameErrors.gameplay}
+            {showRichTextEditor ? (
+              <RichTextEditor
+                content={gameData.content}
+                onChange={(value) => setValue("content", value)}
+                error={gameErrors.content}
               />
-            </StyledBox>
-            <StyledBox>
-              <TextField
-                fullWidth
-                label="Setup"
-                variant="standard"
-                multiline
-                rows={4}
-                value={gameData.setup}
-                onChange={(e) => setValue("setup", e.target.value)}
-                error={Boolean(gameErrors.setup)}
-                helperText={gameErrors.setup}
-              />
-            </StyledBox>
-            <StyledBox>
-              <TextField
-                fullWidth
-                label="Examples"
-                variant="standard"
-                multiline
-                rows={4}
-                value={gameData.examples}
-                onChange={(e) => setValue("examples", e.target.value)}
-                error={Boolean(gameErrors.examples)}
-                helperText={gameErrors.examples}
-              />
-            </StyledBox>
+            ) : (
+              <>
+                <StyledBox>
+                  <TextField
+                    fullWidth
+                    label="Game Play"
+                    variant="standard"
+                    multiline
+                    rows={4}
+                    value={gameData.gameplay}
+                    onChange={(e) => setValue("gameplay", e.target.value)}
+                    error={Boolean(gameErrors.gameplay)}
+                    helperText={gameErrors.gameplay}
+                  />
+                </StyledBox>
+                <StyledBox>
+                  <TextField
+                    fullWidth
+                    label="Setup"
+                    variant="standard"
+                    multiline
+                    rows={4}
+                    value={gameData.setup}
+                    onChange={(e) => setValue("setup", e.target.value)}
+                    error={Boolean(gameErrors.setup)}
+                    helperText={gameErrors.setup}
+                  />
+                </StyledBox>
+                <StyledBox>
+                  <TextField
+                    fullWidth
+                    label="Examples"
+                    variant="standard"
+                    multiline
+                    rows={4}
+                    value={gameData.examples}
+                    onChange={(e) => setValue("examples", e.target.value)}
+                    error={Boolean(gameErrors.examples)}
+                    helperText={gameErrors.examples}
+                  />
+                </StyledBox>
+              </>
+            )}
             <StyledBox>
               <TextField
                 fullWidth
@@ -374,6 +405,25 @@ function GameForm({ data = DEFAULT_GAME, mode = "add", onClose, onSuccess }) {
                   />
                 }
                 label={gameData.isPublic ? "Public" : "Draft Mode"}
+                labelPlacement="end"
+              />
+            </StyledBox>
+            <StyledBox style={{ paddingLeft: "8px" }}>
+              <FormControlLabel
+                value="end"
+                control={
+                  <Switch
+                    checked={showRichTextEditor}
+                    onChange={(e, isChecked) => {
+                      setValue("version", isChecked ? "2.0" : "1.0");
+                      if (isChecked && gameData.content === undefined) {
+                        setValue("content", getContent(gameData));
+                      }
+                    }}
+                    inputProps={{ "aria-label": "controlled" }}
+                  />
+                }
+                label={showRichTextEditor ? "Rich Text Editor" : "Old Editor"}
                 labelPlacement="end"
               />
             </StyledBox>
