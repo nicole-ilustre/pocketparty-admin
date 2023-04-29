@@ -11,11 +11,12 @@ import Button from "@mui/material/Button";
 import MenuItem from "@mui/material/MenuItem";
 import { useRouter } from "next/router";
 
-const pages = ["Games", "Filters", "Curration"];
+const pages = ["Games", "Filters", "Curration", "Comments"];
 const pageRoute = {
   Games: "/",
   Filters: "/filters",
   Curration: "/curration",
+  Comments: "/comments",
 };
 
 function ResponsiveAppBar() {
