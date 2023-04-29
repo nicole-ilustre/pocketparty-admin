@@ -1,7 +1,5 @@
 import { useEffect, useState } from "react";
-import Head from "next/head";
 import { styled } from "@mui/material/styles";
-import CircularProgress from "@mui/material/CircularProgress";
 import Box from "@mui/material/Box";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
@@ -24,6 +22,7 @@ import DialogActions from "@mui/material/DialogActions";
 import DialogTitle from "@mui/material/DialogTitle";
 
 import GameForm from "@/components/game-form";
+import Loader from "@/ui-components/loader";
 
 import { deleteGame as deleteGameApi, getGames } from "@/libs/api";
 
@@ -78,95 +77,77 @@ export default function Home() {
     onSuccess();
   };
 
+  if (showData === false) {
+    return <Loader />;
+  }
+
   return (
     <>
-      <Head>
-        <title>Pocket Party - Admin</title>
-        <meta name="viewport" content="width=device-width, initial-scale=1" />
-        <link rel="icon" href="/favicon.ico" />
-      </Head>
       <main>
-        {showData ? (
-          <Container sx={{ marginTop: "20px", marginBottom: "20px" }}>
-            <Typography variant="h4" sx={{ marginBottom: "16px" }}>
-              Pocket Party - Games
-            </Typography>
-            <Box
-              sx={{
-                display: "flex",
-                justifyContent: "flex-end",
-                marginBottom: "10px",
-              }}
-            >
-              <Button
-                variant="contained"
-                size="large"
-                startIcon={<AddCircleIcon />}
-                onClick={() => setShowAddForm(true)}
-              >
-                New Game
-              </Button>
-            </Box>
-            <TableContainer component={Paper}>
-              <Table sx={{ minWidth: 700 }} aria-label="customized table">
-                <TableHead>
-                  <TableRow>
-                    <StyledTableCell>Title</StyledTableCell>
-                    <StyledTableCell>Sub Title</StyledTableCell>
-                    <StyledTableCell>Filters</StyledTableCell>
-                    <StyledTableCell>Public</StyledTableCell>
-                    <StyledTableCell>Actions</StyledTableCell>
-                  </TableRow>
-                </TableHead>
-                <TableBody>
-                  {data.map((row) => (
-                    <StyledTableRow key={row.uid}>
-                      <StyledTableCell component="th" scope="row">
-                        {row.title}
-                      </StyledTableCell>
-                      <StyledTableCell>{row.subTitle}</StyledTableCell>
-                      <StyledTableCell>
-                        {[...row.place, row.filters].join(", ")}
-                      </StyledTableCell>
-                      <StyledTableCell>
-                        {row.isPublic ? (
-                          <Chip label="Public" color="info" />
-                        ) : (
-                          <Chip label="Draft" color="warning" />
-                        )}
-                      </StyledTableCell>
-                      <StyledTableCell align="right">
-                        <ButtonGroup variant="outlined" size="small">
-                          <Button onClick={() => setEditFormData(row)}>
-                            <EditIcon />
-                          </Button>
-                          <Button onClick={() => setDeleteGame(row.uid)}>
-                            <DeleteIcon />
-                          </Button>
-                        </ButtonGroup>
-                      </StyledTableCell>
-                    </StyledTableRow>
-                  ))}
-                </TableBody>
-              </Table>
-            </TableContainer>
-          </Container>
-        ) : (
+        <Container sx={{ marginTop: "20px", marginBottom: "20px" }}>
+          <Typography variant="h4" sx={{ marginBottom: "16px" }}>
+            Pocket Party - Games
+          </Typography>
           <Box
             sx={{
               display: "flex",
-              position: "absolute",
-              top: 0,
-              right: 0,
-              left: 0,
-              bottom: 0,
-              alignItems: "center",
-              justifyContent: "center",
+              justifyContent: "flex-end",
+              marginBottom: "10px",
             }}
           >
-            <CircularProgress />
+            <Button
+              variant="contained"
+              size="large"
+              startIcon={<AddCircleIcon />}
+              onClick={() => setShowAddForm(true)}
+            >
+              New Game
+            </Button>
           </Box>
-        )}
+          <TableContainer component={Paper}>
+            <Table sx={{ minWidth: 700 }} aria-label="customized table">
+              <TableHead>
+                <TableRow>
+                  <StyledTableCell>Title</StyledTableCell>
+                  <StyledTableCell>Sub Title</StyledTableCell>
+                  <StyledTableCell>Filters</StyledTableCell>
+                  <StyledTableCell>Public</StyledTableCell>
+                  <StyledTableCell>Actions</StyledTableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {data.map((row) => (
+                  <StyledTableRow key={row.uid}>
+                    <StyledTableCell component="th" scope="row">
+                      {row.title}
+                    </StyledTableCell>
+                    <StyledTableCell>{row.subTitle}</StyledTableCell>
+                    <StyledTableCell>
+                      {[...row.place, row.filters].join(", ")}
+                    </StyledTableCell>
+                    <StyledTableCell>
+                      {row.isPublic ? (
+                        <Chip label="Public" color="info" />
+                      ) : (
+                        <Chip label="Draft" color="warning" />
+                      )}
+                    </StyledTableCell>
+                    <StyledTableCell align="right">
+                      <ButtonGroup variant="outlined" size="small">
+                        <Button onClick={() => setEditFormData(row)}>
+                          <EditIcon />
+                        </Button>
+                        <Button onClick={() => setDeleteGame(row.uid)}>
+                          <DeleteIcon />
+                        </Button>
+                      </ButtonGroup>
+                    </StyledTableCell>
+                  </StyledTableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </TableContainer>
+        </Container>
       </main>
       {showAddForm ? (
         <GameForm

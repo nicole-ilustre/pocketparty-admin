@@ -1,12 +1,11 @@
 import { useEffect, useState } from "react";
-import Head from "next/head";
 
-import CircularProgress from "@mui/material/CircularProgress";
-import Box from "@mui/material/Box";
 import Container from "@mui/material/Container";
 import Typography from "@mui/material/Typography";
 
 import CurratedGames from "@/components/currated-games";
+
+import Loader from "@/ui-components/loader";
 
 import { getConfig, updateConfig } from "@/libs/api/config";
 import { getGames, updateGame } from "@/libs/api";
@@ -54,43 +53,19 @@ function Curation() {
     setShowData(true);
   };
 
+  if (showData === false) {
+    return <Loader />;
+  }
+
   return (
-    <>
-      <Head>
-        <title>Pocket Party - Admin</title>
-        <meta name="viewport" content="width=device-width, initial-scale=1" />
-        <link rel="icon" href="/favicon.ico" />
-      </Head>
-      <main>
-        {showData ? (
-          <Container sx={{ marginTop: "20px", marginBottom: "20px" }}>
-            <Typography variant="h4" sx={{ marginBottom: "4px" }}>
-              Pocket Party - Currated Games
-            </Typography>
-            <CurratedGames
-              curratedGames={data}
-              gamesList={games}
-              onSave={onSave}
-            />
-          </Container>
-        ) : (
-          <Box
-            sx={{
-              display: "flex",
-              position: "absolute",
-              top: 0,
-              right: 0,
-              left: 0,
-              bottom: 0,
-              alignItems: "center",
-              justifyContent: "center",
-            }}
-          >
-            <CircularProgress />
-          </Box>
-        )}
-      </main>
-    </>
+    <main>
+      <Container sx={{ marginTop: "20px", marginBottom: "20px" }}>
+        <Typography variant="h4" sx={{ marginBottom: "4px" }}>
+          Pocket Party - Currated Games
+        </Typography>
+        <CurratedGames curratedGames={data} gamesList={games} onSave={onSave} />
+      </Container>
+    </main>
   );
 }
 
