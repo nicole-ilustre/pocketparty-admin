@@ -9,6 +9,7 @@ import Loader from "@/ui-components/loader";
 
 import { getConfig, updateConfig } from "@/libs/api/config";
 import { getGames, updateGame } from "@/libs/api";
+import { updateBundle } from "@/libs/api/bundle";
 
 function Curation() {
   const [showData, setShowData] = useState(false);
@@ -48,6 +49,7 @@ function Curation() {
     );
 
     await Promise.all([...removedPromises, ...addedPromises]);
+    updateBundle();
 
     setData(currationList);
     setShowData(true);
