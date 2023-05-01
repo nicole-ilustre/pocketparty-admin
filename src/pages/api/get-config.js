@@ -1,8 +1,12 @@
 import { db } from "../../server/firebase";
 
-export default async function handler(req, res) {
+export const getConfigDoc = async (configKey) => {
   const configRef = db.collection("site-config");
-  const doc = await configRef.doc(req.query.config).get();
+  return await configRef.doc(configKey).get();
+};
+
+export default async function handler(req, res) {
+  const doc = await getConfigDoc(req.query.config);
 
   if (!doc.exists) {
     res.status(404).json({ status: "failed" });

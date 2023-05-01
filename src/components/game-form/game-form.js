@@ -14,6 +14,7 @@ import RichTextEditor from "./rich-text-editor";
 import { getContent } from "./helpers";
 
 import { getGameBySlug, updateGame, addGame } from "@/libs/api";
+import { updateBundle } from "@/libs/api/bundle";
 
 const StyledBox = styled(Box)(() => ({
   marginBottom: "8px",
@@ -156,6 +157,7 @@ function GameForm({ data = DEFAULT_GAME, mode = "add", onClose, onSuccess }) {
     if (mode === "edit") {
       await updateGame(gameDataServer);
     }
+    updateBundle();
 
     setInProgress(false);
     onSuccess();

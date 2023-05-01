@@ -1,4 +1,5 @@
 import { updateConfig } from "./config";
+import { updateBundle } from "./bundle";
 
 export const getGameBySlug = async (slug) => {
   const searchParams = new URLSearchParams();

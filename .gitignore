@@ -33,3 +33,6 @@ yarn-error.log*
 
 # firebase config
 service-account.json
+
+#google cloud config
+gce-service-account.json

@@ -1,8 +1,20 @@
 import { db } from "../../server/firebase";
 
-export default async function handler(req, res) {
+export const getGamesSnapshot = async () => {
   const gamesRef = db.collection("games");
-  const snapshot = await gamesRef.get();
+  return await gamesRef.get();
+};
+
+export const getCurratedGamesSnapshot = async () => {
+  const gamesRef = db
+    .collection("games")
+    .where("isPublic", "==", true)
+    .where("isCurrated", "==", true);
+  return await gamesRef.get();
+};
+
+export default async function handler(req, res) {
+  const snapshot = await getGamesSnapshot();
   const data = [];
   snapshot.forEach(async (doc) => {
     data.push({
@@ -10,5 +22,6 @@ export default async function handler(req, res) {
       ...doc.data(),
     });
   });
+
   res.status(200).json(data);
 }
