@@ -17,12 +17,14 @@ export default async function handler(req, res) {
     filtersOrder,
     displayFilters,
     googleAds,
+    featureFlags,
   ] = await Promise.all([
     getCurratedGamesSnapshot(),
     getConfigDoc("currated-games"),
     getConfigDoc("filters-order"),
     getConfigDoc("display-filters"),
     getConfigDoc("google-ads"),
+    getConfigDoc("feature-flags"),
   ]);
 
   const bundle = db.bundle(bundleId);
@@ -31,6 +33,7 @@ export default async function handler(req, res) {
     .add(filtersOrder)
     .add(displayFilters)
     .add(googleAds)
+    .add(featureFlags)
     .add("currated-games", curratedGames)
     .build();
 
