@@ -59,6 +59,8 @@ let oldKeys = ["setup", "gameplay", "examples"];
 let newKeys = ["content", "version"];
 
 function GameForm({ data = DEFAULT_GAME, mode = "add", onClose, onSuccess }) {
+  console.log(data);
+
   const [gameData, setGameData] = useState(data);
   const [gameErrors, setGameErrors] = useState({});
   const [isSlugTouched, setIsSlugTouched] = useState(false);
